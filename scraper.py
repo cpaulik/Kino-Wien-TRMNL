@@ -87,9 +87,18 @@ def fetch_details(film_url):
         return [], ""
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    # Extract short description from meta tag
-    meta_desc = soup.select_one("meta[name=description]")
-    description = meta_desc.get("content", "").strip() if meta_desc else ""
+    # Extract full description from the prose paragraph on the page
+    prose_p = soup.select_one("div.prose p")
+    if prose_p:
+        description = prose_p.get_text(strip=True)
+        # Trim extremely long descriptions at a word boundary
+        if len(description) > 350:
+            cutoff = description.rfind(" ", 0, 347)
+            description = description[:cutoff] + "..." if cutoff > 200 else description[:347] + "..."
+    else:
+        # Fallback to meta description
+        meta_desc = soup.select_one("meta[name=description]")
+        description = meta_desc.get("content", "").strip() if meta_desc else ""
 
     # Extract showtimes from timetable
     timetable = soup.find(id="timetable")
