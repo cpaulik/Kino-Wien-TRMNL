@@ -4,147 +4,225 @@
     <span class="instance">{{ week }}</span>
   </div>
 
-  <div class="grid">
-    {% for film in films %}
-    <div class="cell">
-      {% if film.p %}
-      <img class="poster" src="{{ film.p }}" />
-      {% endif %}
-      <div class="info">
-        <span class="film-title">{{ film.t }}</span>
-        <span class="film-meta">{{ film.y }} · {{ film.g }}</span>
-        <span class="film-credits">{{ film.c }}{% if film.d %} · {{ film.d }}{% endif %}</span>
-        {% if film.desc %}
-        <span class="film-desc">{{ film.desc }}</span>
-        {% endif %}
-        <div class="showtimes">
-          {% for s in film.s %}
-          <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-          {% endfor %}
+  <table class="grid">
+    <tr>
+      <td class="cell">
+        {% if films[0] %}
+        <div class="cell-content">
+          {% if films[0].p %}
+          <img class="poster" src="{{ films[0].p }}" />
+          {% endif %}
+          <div class="info">
+            <span class="film-title">{{ films[0].t }}</span>
+            <span class="film-meta">{{ films[0].y }} · {{ films[0].g }}</span>
+            <span class="film-credits">{{ films[0].c }}{% if films[0].d %} · {{ films[0].d }}{% endif %}</span>
+            {% if films[0].desc %}
+            <span class="film-desc">{{ films[0].desc }}</span>
+            {% endif %}
+            <div class="showtimes">
+              {% for s in films[0].s %}
+              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+              {% endfor %}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+        {% endif %}
+      </td>
+      <td class="cell">
+        {% if films[1] %}
+        <div class="cell-content">
+          {% if films[1].p %}
+          <img class="poster" src="{{ films[1].p }}" />
+          {% endif %}
+          <div class="info">
+            <span class="film-title">{{ films[1].t }}</span>
+            <span class="film-meta">{{ films[1].y }} · {{ films[1].g }}</span>
+            <span class="film-credits">{{ films[1].c }}{% if films[1].d %} · {{ films[1].d }}{% endif %}</span>
+            {% if films[1].desc %}
+            <span class="film-desc">{{ films[1].desc }}</span>
+            {% endif %}
+            <div class="showtimes">
+              {% for s in films[1].s %}
+              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td class="cell">
+        {% if films[2] %}
+        <div class="cell-content">
+          {% if films[2].p %}
+          <img class="poster" src="{{ films[2].p }}" />
+          {% endif %}
+          <div class="info">
+            <span class="film-title">{{ films[2].t }}</span>
+            <span class="film-meta">{{ films[2].y }} · {{ films[2].g }}</span>
+            <span class="film-credits">{{ films[2].c }}{% if films[2].d %} · {{ films[2].d }}{% endif %}</span>
+            {% if films[2].desc %}
+            <span class="film-desc">{{ films[2].desc }}</span>
+            {% endif %}
+            <div class="showtimes">
+              {% for s in films[2].s %}
+              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </td>
+      <td class="cell">
+        {% if films[3] %}
+        <div class="cell-content">
+          {% if films[3].p %}
+          <img class="poster" src="{{ films[3].p }}" />
+          {% endif %}
+          <div class="info">
+            <span class="film-title">{{ films[3].t }}</span>
+            <span class="film-meta">{{ films[3].y }} · {{ films[3].g }}</span>
+            <span class="film-credits">{{ films[3].c }}{% if films[3].d %} · {{ films[3].d }}{% endif %}</span>
+            {% if films[3].desc %}
+            <span class="film-desc">{{ films[3].desc }}</span>
+            {% endif %}
+            <div class="showtimes">
+              {% for s in films[3].s %}
+              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
 </div>
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .layout {
+  body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #fff;
     color: #111;
-    width: 1030px;
-    height: 1404px;
-    padding: 16px 16px 12px;
-    display: flex;
-    flex-direction: column;
+  }
+
+  .layout {
+    width: 800px;
+    height: 480px;
+    padding: 12px 14px 10px;
+    background: #fff;
+    overflow: hidden;
   }
 
   .title_bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 8px;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
     border-bottom: 2px solid #111;
-    margin-bottom: 10px;
-    flex-shrink: 0;
   }
 
   .title_bar .title {
     font-size: 18px;
     font-weight: 700;
-    letter-spacing: -0.3px;
   }
 
   .title_bar .instance {
-    font-size: 14px;
+    float: right;
+    font-size: 13px;
     color: #555;
     font-weight: 500;
+    padding-top: 4px;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 8px;
-    flex: 1;
+  table.grid {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
   }
 
-  .cell {
+  table.grid td.cell {
+    width: 50%;
+    height: 50%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+  }
+
+  .cell-content {
     display: flex;
-    gap: 8px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    gap: 6px;
+    height: 100%;
     overflow: hidden;
   }
 
   .poster {
-    width: 214px;
-    height: 321px;
-    object-fit: cover;
-    border-radius: 4px;
-    flex-shrink: 0;
+    width: 72px;
+    height: 108px;
+    border-radius: 3px;
     background: #eee;
+    flex-shrink: 0;
   }
 
   .info {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
     overflow: hidden;
     min-width: 0;
-    flex: 1;
   }
 
   .film-title {
-    font-size: 18px;
+    display: block;
+    font-size: 12px;
     font-weight: 700;
-    line-height: 1.2;
-    display: -webkit-box;
-    -webkit-line-clamp: 20;
-    -webkit-box-orient: vertical;
+    line-height: 1.15;
+    max-height: 60px;
     overflow: hidden;
+    margin-bottom: 1px;
   }
 
   .film-meta {
-    font-size: 14px;
-    font-weight: 700;
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
     color: #666;
     line-height: 1.2;
+    max-height: 22px;
+    overflow: hidden;
+    margin-bottom: 1px;
   }
 
   .film-credits {
-    font-size: 12px;
+    display: block;
+    font-size: 8px;
     color: #888;
     line-height: 1.2;
+    max-height: 15px;
+    overflow: hidden;
+    margin-bottom: 1px;
   }
 
   .film-desc {
-    font-size: 12px;
+    display: block;
+    font-size: 8.5px;
     color: #333;
-    line-height: 1.25;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    line-height: 1.2;
+    max-height: 32px;
     overflow: hidden;
     margin-top: 2px;
+    margin-bottom: 2px;
   }
 
   .showtimes {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    margin-top: 2px;
   }
 
   .showtime {
-    font-size: 11px;
+    display: block;
+    font-size: 7.5px;
+    font-weight: 600;
     color: #555;
-    line-height: 1.3;
-    font-weight: 700;
+    line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
