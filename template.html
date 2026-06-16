@@ -1,7 +1,21 @@
-<div class="title title--sm">Kino Wien · {{ merge_variables.week }}</div>
-{% for film in merge_variables.films %}
-<div class="item">
-  <span class="label label--sm">{{ film.t }} ({{ film.y }})</span>
-  <span class="description">{{ film.d }}{% if film.g %} · {{ film.g }}{% endif %} · {{ film.c }}</span>
+<div class="layout">
+  <div class="columns">
+    <div class="column">
+      {% for film in films %}
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="title title--small">{{ film.t }} ({{ film.y }}) · {{ film.g }}</span>
+          {% for s in film.s %}
+          <span class="description">{{ s.k }} · {{ s.dat }} {{ s.ti }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
-{% endfor %}
+<div class="title_bar">
+  <span class="title">Kino Wien</span>
+  <span class="instance">{{ week }}</span>
+</div>
