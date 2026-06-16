@@ -90,13 +90,6 @@ def fetch_details(film_url):
     # Extract short description from meta tag
     meta_desc = soup.select_one("meta[name=description]")
     description = meta_desc.get("content", "").strip() if meta_desc else ""
-    # Truncate for payload and display — keep ~100 chars at a word boundary
-    if len(description) > 100:
-        cutoff = description.rfind(" ", 0, 97)
-        if cutoff > 60:
-            description = description[:cutoff] + "..."
-        else:
-            description = description[:97] + "..."
 
     # Extract showtimes from timetable
     timetable = soup.find(id="timetable")
