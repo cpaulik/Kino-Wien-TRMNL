@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Scrapes Falter.at recommended films for Vienna, fetches showtimes for a random
-selection, and POSTs to the TRMNL webhook.
+Scrapes Falter.at recommended films for Vienna, fetches showtimes and details
+for a random selection, and POSTs to the TRMNL webhook.
 
 Run frequently (e.g. every 30-60 min) for rotation. The full film list
-(without showtimes) is cached daily; only the 5 selected films trigger
+(without showtimes/details) is cached daily; only the 4 selected films trigger
 detail-page fetches per run.
 
 Required env var: TRMNL_WEBHOOK_URL
@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup
 
 TRMNL_WEBHOOK_URL = os.environ["TRMNL_WEBHOOK_URL"]
 CACHE_FILE = Path(__file__).parent / "films_cache.json"
-DISPLAY_COUNT = 5   # fewer films leaves room for showtime data within 2kb
+DISPLAY_COUNT = 4   # 2×2 quadrants on TRMNL
 PAGES_TO_FETCH = 7
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 MAX_SHOWTIMES = 3   # next N showtimes per film
@@ -56,53 +56,76 @@ def parse_films(html):
             country = items[0] if items else ""
             runtime = items[1] if len(items) > 1 else ""
         genres = [get_text(li) for li in a.select("li.bg-gray-50") if get_text(li)]
+
+        # Extract poster image from the film card thumbnail
+        poster_url = ""
+        poster_img = a.select_one("img[src*=\"/events/\"]")
+        if poster_img:
+            src = poster_img.get("src", "")
+            # Use a larger size (300px) for the TRMNL display
+            poster_url = re.sub(r"/events/\d+/", "/events/300/", src)
+
         films.append({
             "t": title,
             "y": year,
             "d": director,
             "g": " / ".join(genres),
             "c": f"{country} {runtime}".strip(),
+            "p": poster_url,
             "url": href,
         })
     return films
 
 
-def fetch_showtimes(film_url):
-    """Returns list of dicts with 'cinema', 'date', 'time' for upcoming shows."""
+def fetch_details(film_url):
+    """Fetch showtimes and description from a film's detail page.
+
+    Returns (showtimes_list, description_string).
+    """
     resp = requests.get(film_url, timeout=15, headers=HEADERS)
     if not resp.ok:
-        return []
+        return [], ""
     soup = BeautifulSoup(resp.text, "html.parser")
-    timetable = soup.find(id="timetable")
-    if not timetable:
-        return []
 
+    # Extract short description from meta tag
+    meta_desc = soup.select_one("meta[name=description]")
+    description = meta_desc.get("content", "").strip() if meta_desc else ""
+    # Truncate for payload and display — keep ~100 chars at a word boundary
+    if len(description) > 100:
+        cutoff = description.rfind(" ", 0, 97)
+        if cutoff > 60:
+            description = description[:cutoff] + "..."
+        else:
+            description = description[:97] + "..."
+
+    # Extract showtimes from timetable
+    timetable = soup.find(id="timetable")
     showtimes = []
-    for tbody in timetable.select("tbody[data-region]"):
-        th = tbody.select_one("th div.block")
-        cinema = get_text(th)
-        for row in tbody.select("tr")[1:]:
-            tds = row.select("td")
-            if len(tds) < 2:
-                continue
-            raw_date = get_text(tds[0])
-            # "22.06.2026Montag" → "22.06."
-            date_match = re.search(r"(\d{2}\.\d{2}\.)", raw_date)
-            day_match = re.search(r"(Mo|Di|Mi|Do|Fr|Sa|So)", raw_date)
-            short_date = (date_match.group(1) if date_match else raw_date[:6])
-            day = (day_match.group(1) if day_match else "")
-            time_raw = get_text(tds[1])
-            time_match = re.search(r"\d{2}:\d{2}", time_raw)
-            time = time_match.group(0) if time_match else time_raw
-            if cinema and time:
-                showtimes.append({
-                    "k": cinema,          # Kino
-                    "dat": f"{day} {short_date}".strip(),
-                    "ti": time,
-                })
-            if len(showtimes) >= MAX_SHOWTIMES:
-                return showtimes
-    return showtimes
+    if timetable:
+        for tbody in timetable.select("tbody[data-region]"):
+            th = tbody.select_one("th div.block")
+            cinema = get_text(th)
+            for row in tbody.select("tr")[1:]:
+                tds = row.select("td")
+                if len(tds) < 2:
+                    continue
+                raw_date = get_text(tds[0])
+                date_match = re.search(r"(\d{2}\.\d{2}\.)", raw_date)
+                day_match = re.search(r"(Mo|Di|Mi|Do|Fr|Sa|So)", raw_date)
+                short_date = date_match.group(1) if date_match else raw_date[:6]
+                day = day_match.group(1) if day_match else ""
+                time_raw = get_text(tds[1])
+                time_match = re.search(r"\d{2}:\d{2}", time_raw)
+                time = time_match.group(0) if time_match else time_raw
+                if cinema and time:
+                    showtimes.append({
+                        "k": cinema,
+                        "dat": f"{day} {short_date}".strip(),
+                        "ti": time,
+                    })
+                if len(showtimes) >= MAX_SHOWTIMES:
+                    return showtimes, description
+    return showtimes, description
 
 
 def scrape_films(span):
@@ -147,9 +170,12 @@ def main():
 
     selection = random.sample(all_films, min(DISPLAY_COUNT, len(all_films)))
 
-    print(f"Fetching showtimes for {len(selection)} films...")
+    print(f"Fetching details for {len(selection)} films...")
     for film in selection:
-        film["s"] = fetch_showtimes(film["url"])
+        showtimes, desc = fetch_details(film["url"])
+        film["s"] = showtimes
+        if desc:
+            film["desc"] = desc
         del film["url"]  # don't waste payload space
 
     payload = {
