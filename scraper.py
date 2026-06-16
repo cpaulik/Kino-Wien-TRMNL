@@ -92,9 +92,9 @@ def fetch_details(film_url):
     if prose_p:
         description = prose_p.get_text(strip=True)
         # Trim extremely long descriptions at a word boundary
-        if len(description) > 600:
-            cutoff = description.rfind(" ", 0, 597)
-            description = description[:cutoff] + "..." if cutoff > 400 else description[:597] + "..."
+        if len(description) > 250:
+            cutoff = description.rfind(" ", 0, 247)
+            description = description[:cutoff] + "..." if cutoff > 150 else description[:247] + "..."
     else:
         # Fallback to meta description
         meta_desc = soup.select_one("meta[name=description]")
