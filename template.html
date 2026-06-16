@@ -1,230 +1,91 @@
 <div class="layout">
-  <div class="title_bar">
-    <span class="title">Kino Wien</span>
-    <span class="instance">{{ week }}</span>
-  </div>
-
-  <table class="grid">
-    <tr>
-      <td class="cell">
-        {% if films[0] %}
-        <div class="cell-content">
+  <div class="columns">
+    <div class="column">
+      <div class="item">
+        <div class="meta">
           {% if films[0].p %}
-          <img class="poster" src="{{ films[0].p }}" />
+          <img src="{{ films[0].p }}" width="72" height="108" />
           {% endif %}
-          <div class="info">
-            <span class="film-title">{{ films[0].t }}</span>
-            <span class="film-meta">{{ films[0].y }} · {{ films[0].g }}</span>
-            <span class="film-credits">{{ films[0].c }}{% if films[0].d %} · {{ films[0].d }}{% endif %}</span>
-            {% if films[0].desc %}
-            <span class="film-desc">{{ films[0].desc }}</span>
-            {% endif %}
-            <div class="showtimes">
-              {% for s in films[0].s %}
-              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-              {% endfor %}
-            </div>
-          </div>
         </div>
-        {% endif %}
-      </td>
-      <td class="cell">
-        {% if films[1] %}
-        <div class="cell-content">
+        <div class="content">
+          <span class="title title--small">{{ films[0].t }}</span>
+          <span class="label">{{ films[0].y }} · {{ films[0].g }}</span>
+          <span class="label label--tiny">{{ films[0].c }}{% if films[0].d %} · {{ films[0].d }}{% endif %}</span>
+          {% if films[0].desc %}
+          <span class="description description--small">{{ films[0].desc }}</span>
+          {% endif %}
+          {% for s in films[0].s %}
+          <span class="label label--tiny">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="item">
+        <div class="meta">
           {% if films[1].p %}
-          <img class="poster" src="{{ films[1].p }}" />
+          <img src="{{ films[1].p }}" width="72" height="108" />
           {% endif %}
-          <div class="info">
-            <span class="film-title">{{ films[1].t }}</span>
-            <span class="film-meta">{{ films[1].y }} · {{ films[1].g }}</span>
-            <span class="film-credits">{{ films[1].c }}{% if films[1].d %} · {{ films[1].d }}{% endif %}</span>
-            {% if films[1].desc %}
-            <span class="film-desc">{{ films[1].desc }}</span>
-            {% endif %}
-            <div class="showtimes">
-              {% for s in films[1].s %}
-              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-              {% endfor %}
-            </div>
-          </div>
         </div>
-        {% endif %}
-      </td>
-    </tr>
-    <tr>
-      <td class="cell">
-        {% if films[2] %}
-        <div class="cell-content">
+        <div class="content">
+          <span class="title title--small">{{ films[1].t }}</span>
+          <span class="label">{{ films[1].y }} · {{ films[1].g }}</span>
+          <span class="label label--tiny">{{ films[1].c }}{% if films[1].d %} · {{ films[1].d }}{% endif %}</span>
+          {% if films[1].desc %}
+          <span class="description description--small">{{ films[1].desc }}</span>
+          {% endif %}
+          {% for s in films[1].s %}
+          <span class="label label--tiny">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="columns">
+    <div class="column">
+      <div class="item">
+        <div class="meta">
           {% if films[2].p %}
-          <img class="poster" src="{{ films[2].p }}" />
+          <img src="{{ films[2].p }}" width="72" height="108" />
           {% endif %}
-          <div class="info">
-            <span class="film-title">{{ films[2].t }}</span>
-            <span class="film-meta">{{ films[2].y }} · {{ films[2].g }}</span>
-            <span class="film-credits">{{ films[2].c }}{% if films[2].d %} · {{ films[2].d }}{% endif %}</span>
-            {% if films[2].desc %}
-            <span class="film-desc">{{ films[2].desc }}</span>
-            {% endif %}
-            <div class="showtimes">
-              {% for s in films[2].s %}
-              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-              {% endfor %}
-            </div>
-          </div>
         </div>
-        {% endif %}
-      </td>
-      <td class="cell">
-        {% if films[3] %}
-        <div class="cell-content">
+        <div class="content">
+          <span class="title title--small">{{ films[2].t }}</span>
+          <span class="label">{{ films[2].y }} · {{ films[2].g }}</span>
+          <span class="label label--tiny">{{ films[2].c }}{% if films[2].d %} · {{ films[2].d }}{% endif %}</span>
+          {% if films[2].desc %}
+          <span class="description description--small">{{ films[2].desc }}</span>
+          {% endif %}
+          {% for s in films[2].s %}
+          <span class="label label--tiny">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="item">
+        <div class="meta">
           {% if films[3].p %}
-          <img class="poster" src="{{ films[3].p }}" />
+          <img src="{{ films[3].p }}" width="72" height="108" />
           {% endif %}
-          <div class="info">
-            <span class="film-title">{{ films[3].t }}</span>
-            <span class="film-meta">{{ films[3].y }} · {{ films[3].g }}</span>
-            <span class="film-credits">{{ films[3].c }}{% if films[3].d %} · {{ films[3].d }}{% endif %}</span>
-            {% if films[3].desc %}
-            <span class="film-desc">{{ films[3].desc }}</span>
-            {% endif %}
-            <div class="showtimes">
-              {% for s in films[3].s %}
-              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-              {% endfor %}
-            </div>
-          </div>
         </div>
-        {% endif %}
-      </td>
-    </tr>
-  </table>
+        <div class="content">
+          <span class="title title--small">{{ films[3].t }}</span>
+          <span class="label">{{ films[3].y }} · {{ films[3].g }}</span>
+          <span class="label label--tiny">{{ films[3].c }}{% if films[3].d %} · {{ films[3].d }}{% endif %}</span>
+          {% if films[3].desc %}
+          <span class="description description--small">{{ films[3].desc }}</span>
+          {% endif %}
+          {% for s in films[3].s %}
+          <span class="label label--tiny">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #fff;
-    color: #111;
-  }
-
-  .layout {
-    width: 800px;
-    height: 480px;
-    padding: 12px 14px 10px;
-    background: #fff;
-    overflow: hidden;
-  }
-
-  .title_bar {
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-    border-bottom: 2px solid #111;
-  }
-
-  .title_bar .title {
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .title_bar .instance {
-    float: right;
-    font-size: 13px;
-    color: #555;
-    font-weight: 500;
-    padding-top: 4px;
-  }
-
-  table.grid {
-    width: 100%;
-    height: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  table.grid td.cell {
-    width: 50%;
-    height: 50%;
-    padding: 6px;
-    border: 1px solid #ccc;
-    vertical-align: top;
-  }
-
-  .cell-content {
-    display: flex;
-    gap: 6px;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .poster {
-    width: 72px;
-    height: 108px;
-    border-radius: 3px;
-    background: #eee;
-    flex-shrink: 0;
-  }
-
-  .info {
-    overflow: hidden;
-    min-width: 0;
-  }
-
-  .film-title {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.15;
-    max-height: 60px;
-    overflow: hidden;
-    margin-bottom: 1px;
-  }
-
-  .film-meta {
-    display: block;
-    font-size: 9px;
-    font-weight: 600;
-    color: #666;
-    line-height: 1.2;
-    max-height: 22px;
-    overflow: hidden;
-    margin-bottom: 1px;
-  }
-
-  .film-credits {
-    display: block;
-    font-size: 8px;
-    color: #888;
-    line-height: 1.2;
-    max-height: 15px;
-    overflow: hidden;
-    margin-bottom: 1px;
-  }
-
-  .film-desc {
-    display: block;
-    font-size: 8.5px;
-    color: #333;
-    line-height: 1.2;
-    max-height: 32px;
-    overflow: hidden;
-    margin-top: 2px;
-    margin-bottom: 2px;
-  }
-
-  .showtimes {
-    margin-top: 2px;
-  }
-
-  .showtime {
-    display: block;
-    font-size: 7.5px;
-    font-weight: 600;
-    color: #555;
-    line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>
+<div class="title_bar">
+  <span class="title">Kino Wien</span>
+  <span class="instance">{{ week }}</span>
+</div>
