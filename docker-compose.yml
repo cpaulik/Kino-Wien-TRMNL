@@ -1,0 +1,12 @@
+services:
+  trmnl-kino:
+    image: ghcr.io/cpaulik/kino-wien-trmnl:latest
+    restart: unless-stopped
+    environment:
+      TRMNL_WEBHOOK_URL: ${TRMNL_WEBHOOK_URL}
+      INTERVAL: 1800
+    volumes:
+      - cache:/cache
+
+volumes:
+  cache:

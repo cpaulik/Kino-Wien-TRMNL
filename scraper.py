@@ -20,7 +20,7 @@ import requests
 from bs4 import BeautifulSoup
 
 TRMNL_WEBHOOK_URL = os.environ["TRMNL_WEBHOOK_URL"]
-CACHE_FILE = Path(__file__).parent / "films_cache.json"
+CACHE_FILE = Path(os.environ.get("CACHE_DIR", Path(__file__).parent)) / "films_cache.json"
 DISPLAY_COUNT = 4   # 2×2 quadrants on TRMNL
 PAGES_TO_FETCH = 7
 HEADERS = {"User-Agent": "Mozilla/5.0"}
