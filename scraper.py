@@ -105,6 +105,8 @@ def fetch_details(film_url):
     showtimes = []
     if timetable:
         for tbody in timetable.select("tbody[data-region]"):
+            if "wien" not in tbody.get("data-region", "").lower():
+                continue
             th = tbody.select_one("th div.block")
             cinema = get_text(th)
             for row in tbody.select("tr")[1:]:
