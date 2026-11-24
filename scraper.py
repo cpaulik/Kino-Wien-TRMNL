@@ -25,6 +25,9 @@ DISPLAY_COUNT = 4   # 2×2 quadrants on TRMNL
 PAGES_TO_FETCH = 7
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 MAX_SHOWTIMES = 3   # next N showtimes per film
+MAX_DESC = int(os.environ.get("MAX_DESC", "400"))   # description chars before trimming
+# TRMNL accepts 5kb of merge variables, 10kb for TRMNL+ subscribers
+PAYLOAD_LIMIT = int(os.environ.get("PAYLOAD_LIMIT", "4800"))
 
 
 def get_text(el):
@@ -92,9 +95,10 @@ def fetch_details(film_url):
     if prose_p:
         description = prose_p.get_text(strip=True)
         # Trim extremely long descriptions at a word boundary
-        if len(description) > 250:
-            cutoff = description.rfind(" ", 0, 247)
-            description = description[:cutoff] + "..." if cutoff > 150 else description[:247] + "..."
+        if len(description) > MAX_DESC:
+            cutoff = description.rfind(" ", 0, MAX_DESC - 3)
+            description = (description[:cutoff] if cutoff > MAX_DESC * 0.6
+                           else description[:MAX_DESC - 3]) + "..."
     else:
         # Fallback to meta description
         meta_desc = soup.select_one("meta[name=description]")
@@ -191,8 +195,8 @@ def main():
 
     size = len(json.dumps(payload))
     print(f"Posting {len(selection)} films ({size} bytes).")
-    if size > 2000:
-        print("WARNING: payload over 2kb, TRMNL may reject it.")
+    if size > PAYLOAD_LIMIT:
+        print(f"WARNING: payload over {PAYLOAD_LIMIT} bytes, TRMNL may reject it.")
 
     resp = requests.post(TRMNL_WEBHOOK_URL, json=payload, timeout=10)
     print(f"TRMNL: {resp.status_code} {resp.text}")

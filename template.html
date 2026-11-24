@@ -6,83 +6,105 @@
 
   <div class="grid">
     {% for film in films %}
-    <div class="cell">
-      {% if film.p %}
-      <img class="poster" src="{{ film.p }}" />
-      {% endif %}
-      <div class="info">
-        <span class="film-title">{{ film.t }}</span>
-        <span class="film-meta">{{ film.y }} · {{ film.g }}</span>
-        <span class="film-credits">{{ film.c }}{% if film.d %} · {{ film.d }}{% endif %}</span>
-        {% if film.desc %}
-        <span class="film-desc">{{ film.desc }}</span>
+      <div class="cell">
+        {% if film.p %}
+          <img class="poster" src="{{ film.p }}" />
         {% endif %}
-        <div class="showtimes">
-          {% for s in film.s %}
-          <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
-          {% endfor %}
+        <div class="info">
+          <span class="film-title">{{ film.t }}</span>
+          <span class="film-meta">{{ film.y }} · {{ film.g }}</span>
+          <span class="film-credits">{{ film.c }}{% if film.d %} · {{ film.d }}{% endif %}</span>
+          {% if film.desc %}
+            <span class="film-desc">{{ film.desc }}</span>
+          {% endif %}
+          <div class="showtimes">
+            {% for s in film.s %}
+              <span class="showtime">{{ s.dat }} {{ s.ti }} · {{ s.k }}</span>
+            {% endfor %}
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 </div>
 
 <style>
 
+  /* Geometry notes
+     Markup is rendered at CSS pixels, which are not panel pixels. A TRMNL X
+     renders at 1040x780 and scales by its pixel-ratio of 1.8 onto the
+     1872x1404 panel; a TRMNL OG renders at 800x480. Both are landscape.
+     Nothing here declares a frame: the layout fills whatever canvas it is
+     given, and every size is relative to the card it sits in via container
+     query units, which also keeps it right inside mashup slots where viewport
+     units would still refer to the whole screen. */
   .layout {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     background: #fff;
     color: #111;
-    width: 1030px;
-    height: 1404px;
-    padding: 16px 16px 12px;
+    padding: 1.2cqh 1cqw 1cqh;
     display: flex;
     flex-direction: column;
+    container-type: size;
+  }
+
+  .layout *, .layout *::before, .layout *::after {
+    box-sizing: border-box;
   }
 
   .title_bar {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 8px;
+    padding: 0 2px 0.6cqh;
     border-bottom: 2px solid #111;
-    margin-bottom: 10px;
+    margin-bottom: 1cqh;
     flex-shrink: 0;
   }
 
   .title_bar .title {
-    font-size: 18px;
+    font-size: calc(8px + 1.1cqh);
     font-weight: 700;
     letter-spacing: -0.3px;
   }
 
   .title_bar .instance {
-    font-size: 14px;
+    font-size: calc(6px + 0.9cqh);
     color: #555;
     font-weight: 500;
   }
 
   .grid {
+    flex: 1;
+    min-height: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 8px;
-    flex: 1;
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 1cqh 1cqw;
   }
 
   .cell {
     display: flex;
-    gap: 8px;
-    padding: 8px;
+    gap: 2cqw;
+    min-width: 0;
+    min-height: 0;
+    padding: 1.8cqh 2cqw;
     border: 1px solid #ddd;
     border-radius: 6px;
     overflow: hidden;
+    container-type: size;
   }
 
+  /* Film posters are 2:3. Sizing by height keeps that ratio honest instead of
+     cropping to a fixed box, and caps how much of the card the poster eats. */
   .poster {
-    width: 214px;
-    height: 321px;
+    height: 72cqh;
+    aspect-ratio: 2 / 3;
+    width: auto;
+    max-width: 38cqw;
     object-fit: cover;
     border-radius: 4px;
     flex-shrink: 0;
@@ -92,60 +114,75 @@
   .info {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 0.3cqh;
     overflow: hidden;
     min-width: 0;
     flex: 1;
   }
 
   .film-title {
-    font-size: 18px;
+    font-size: calc(9px + 2.2cqh);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.15;
     display: -webkit-box;
-    -webkit-line-clamp: 20;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
   .film-meta {
-    font-size: 14px;
+    font-size: calc(6px + 1.6cqh);
     font-weight: 700;
     color: #666;
     line-height: 1.2;
   }
 
   .film-credits {
-    font-size: 12px;
+    font-size: calc(5px + 1.3cqh);
     color: #888;
     line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .film-desc {
-    font-size: 12px;
+    font-size: calc(6px + 1.6cqh);
     color: #333;
-    line-height: 1.25;
+    line-height: 1.28;
+    margin-top: 0.6cqh;
     display: -webkit-box;
-    -webkit-line-clamp: 20;
+    -webkit-line-clamp: 8;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-top: 2px;
+  }
+
+  /* tall cells (single-row layouts, bigger panels) can afford more prose */
+  @container (min-height: 480px) {
+    .film-desc { -webkit-line-clamp: 16; }
+    .poster { height: 60cqh; }
   }
 
   .showtimes {
     margin-top: auto;
+    padding-top: 1cqh;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 0.2cqh;
   }
 
+  /* Cinema names are long. Wrapping to a second line beats losing them to an
+     ellipsis, which is what nowrap did to "Das Kino - Salzburger Filmkulturzentrum". */
   .showtime {
-    font-size: 11px;
+    font-size: calc(5px + 1.5cqh);
     color: #555;
-    line-height: 1.3;
+    line-height: 1.25;
     font-weight: 700;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>
